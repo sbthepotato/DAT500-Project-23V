@@ -1,9 +1,6 @@
-import csv
 from csv import DictReader
 
 if __name__=="__main__":
-	print('stuff')
-
 	filename = '2022-01'
 
 	with open('original/'+filename+'.csv' ,'r') as data:
