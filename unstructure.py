@@ -17,3 +17,5 @@ if __name__=="__main__":
 				for i in list_of_dict:
 					for k, v in i.items(): 
 						print(k, v, file=f)
+
+			print(file[0])
