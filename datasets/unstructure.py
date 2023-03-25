@@ -1,13 +1,19 @@
+import os
 from csv import DictReader
 
 if __name__=="__main__":
-	filename = '2022-01'
 
-	with open('original/'+filename+'.csv' ,'r') as data:
-		dict_reader = DictReader(data)
-		list_of_dict = list(dict_reader)
+	file_list = os.listdir('csv/')
 
-	with open('scrambled/'+filename+'.txt', 'w') as f:
-		for i in list_of_dict:
-			for k, v in i.items(): 
-				print(k, v, file=f)
+	for file in file_list:
+		if '.csv' in file:
+			file = file.split('.')
+
+			with open('csv/'+file[0]+'.csv' ,'r') as data:
+				dict_reader = DictReader(data)
+				list_of_dict = list(dict_reader)
+
+			with open('txt/'+file[0]+'.txt', 'w') as f:
+				for i in list_of_dict:
+					for k, v in i.items(): 
+						print(k, v, file=f)
