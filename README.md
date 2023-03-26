@@ -6,50 +6,50 @@ The datasets have been sourced from the [US Bureau of Transportation statistics]
 
 columns downloaded:
 
-Time Period:
-- Year
-- Quarter
-- Month
-- DayofMonth
-- DayofWeek
-- FlightDate
-Airline:
-- Reporting_Airline
-- Tail_Number
-- Flight_Number_Reporting_Airline
-Origin:
-- OriginAirportID
-- OriginAirportSeqID
-- OriginCityMarketID
-- Origin
-- OriginCityName
-- OriginStateName
-Destination:
-- DestAirportID
-- DestAirportSeqID
-- DestCityMarketID
-- Dest
-- DestCityName
-- DestStateName
-Departure Performance:
-- DepDelay
-- DepDelayMinutes
-- DepDel15
-Arrival Performance:
-- ArrDelay
-- ArrDelayMinutes
-- ArrDel15
-Cancellations and Diversions:
-- Cancelled
-- CancellationCode
-- Diverted
-Flight Summaries
-- AirTime
-- Distance
-- DistanceGroup
-Cause of Delay
-- CarrierDelay
-- WeatherDelay
-- NASDelay
-- SecurityDelay
-- LateAircraftDelay
+- Time Period:
+  - Year
+  - Quarter
+  - Month
+  - DayofMonth
+  - DayofWeek
+  - FlightDate
+- Airline:
+  - Reporting_Airline
+  - Tail_Number
+  - Flight_Number_Reporting_Airline
+- Origin:
+  - OriginAirportID
+  - OriginAirportSeqID
+  - OriginCityMarketID
+  - Origin
+  - OriginCityName
+  - OriginStateName
+- Destination:
+  - DestAirportID
+  - DestAirportSeqID
+  - DestCityMarketID
+  - Dest
+  - DestCityName
+  - DestStateName
+- Departure Performance:
+  - DepDelay
+  - DepDelayMinutes
+  - DepDel15
+- Arrival Performance:
+  - ArrDelay
+  - ArrDelayMinutes
+  - ArrDel15
+- Cancellations and Diversions:
+  - Cancelled
+  - CancellationCode
+  - Diverted
+- Flight Summaries
+  - AirTime
+  - Distance
+  - DistanceGroup
+- Cause of Delay
+  - CarrierDelay
+  - WeatherDelay
+  - NASDelay
+  - SecurityDelay
+  - LateAircraftDelay
