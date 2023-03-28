@@ -53,3 +53,19 @@ columns downloaded:
   - NASDelay
   - SecurityDelay
   - LateAircraftDelay
+
+## Commands Worth Remembering
+
+``scp -r \<folder> \<user@ip>:~``
+
+``start-dfs.sh``
+
+``start-yarn.sh``
+
+``hdfs dfsadmin -report``
+
+``hadoop fs -put \<folder>/<*.txt> </dir>``
+
+``"python3 <py_file>.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///<dir>/<file> --output-dir hdfs:///<dir>/<file> --no-output``
+
+``hadoop fs -text /\<folder>/\<file> | less``
