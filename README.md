@@ -56,7 +56,7 @@ columns downloaded:
 
 ## Commands Worth Remembering
 
-``scp -r \<folder> \<user@ip>:~``
+``scp -r folder user@ip:~``
 
 ``start-dfs.sh``
 
@@ -64,8 +64,12 @@ columns downloaded:
 
 ``hdfs dfsadmin -report``
 
-``hadoop fs -put \<folder>/<*.txt> </dir>``
+``hadoop fs -put folder/*.txt /dir``
 
-``"python3 <py_file>.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///<dir>/<file> --output-dir hdfs:///<dir>/<file> --no-output``
+``python3 py_file.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dir/file --output-dir hdfs:///dir/file --no-output``
 
-``hadoop fs -text /\<folder>/\<file> | less``
+``python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dis_materials/hadoop_1m.txt --output-dir hdfs:///dis_materials/output1 --no-output``
+
+``hadoop fs -text /folder/file | less``
+
+``hadoop fs -text /folder/file/part* | less``
