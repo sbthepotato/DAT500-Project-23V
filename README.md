@@ -66,7 +66,7 @@ columns downloaded:
 
 ``hadoop fs -put folder/*.txt /dir``
 
-``python3 py_file.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dir/file --output-dir hdfs:///dir/file --no-output``
+``python3 count_del.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///txt/2022-12.txt --output-dir hdfs:///2022-12/ --no-output``
 
 ``python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dis_materials/hadoop_1m.txt --output-dir hdfs:///dis_materials/output1 --no-output``
 

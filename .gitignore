@@ -2,7 +2,7 @@
 # Large files Gitignore #
 #########################
 
-scrambled/
+csv/
 ssh.txt
 
 
