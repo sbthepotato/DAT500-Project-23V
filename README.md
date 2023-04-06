@@ -66,7 +66,19 @@ columns downloaded:
 
 ``hadoop fs -put folder/*.txt /dir``
 
-``python3 count_del.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///txt/2022-12.txt --output-dir hdfs:///2022-12/ --no-output``
+``python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///txt/2022-12.txt --output-dir hdfs:///2022-12/ --no-output``
+
+``mapred streaming -files email_count_mapper.py,email_count_reducer.py \
+-input /dis_materials/hadoop_1m.txt \
+-output /dis_materials/output1 \
+-mapper "email_count_mapper.py" \
+-reducer "email_count_reducer.py"``
+
+``mapred streaming -files flight_mapper.py,flight_reducer.py \
+-input /txt/2022-12.txt \
+-output /2022-12 \
+-mapper "flight_mapper.py" \
+-reducer "flight_reducer.py"``
 
 ``python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dis_materials/hadoop_1m.txt --output-dir hdfs:///dis_materials/output1 --no-output``
 
