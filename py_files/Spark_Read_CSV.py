@@ -12,7 +12,7 @@ flightSchema = StructType() \
     .add("MONTH", "integer")\
     .add("DAY_OF_MONTH", "integer")\
     .add("DAY_OF_WEEK", "integer")\
-    .add("FL_DATE", "timestamp")\
+    .add("FL_DATE", "string")\
     .add("OP_UNIQUE_CARRIER", "string")\
     .add("TAIL_NUM", "string")\
     .add("OP_CARRIER_FL_NUM", "integer")\
