@@ -1,0 +1,131 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.9}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\tiny,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+
+\title{Finding Flight Delay Trends}
+\subtitle{DAT500 Project Group 17}
+% \date{\today}
+\date{}
+\author{Bhakti Prabhu \& Stephan F. W. Brandasu}
+\institute{Faculty of Science and Technology}
+\titlegraphic{\hfill\includegraphics[height=1.5cm]{images/logo.png}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Why? \\ \small the use case}
+As a traveller: 
+\begin{enumerate}
+    \item Not miss any important meetings/events/functions.
+    \item Pre-plan journey
+    \item Have idea of buffer time while flight booking
+\end{enumerate}
+
+As an airline:
+\begin{enumerate}
+    \item  know when to increase workforce.
+    \item Opportunity to improve over competitors.
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{What? \\ \small the dataset}
+Sourced from the United States Bureau of Transportation statistics. The dataset is a total of 5GB for 3 years of data
+
+\begin{lstlisting}
+FL_DATE 1/1/2022 12:00:00 AM
+OP_UNIQUE_CARRIER 9E
+OP_CARRIER_AIRLINE_ID 20363
+OP_CARRIER 9E
+TAIL_NUM N138EV
+OP_CARRIER_FL_NUM 4732
+ORIGIN_AIRPORT_ID 10135
+ORIGIN_AIRPORT_SEQ_ID 1013506
+ORIGIN_CITY_MARKET_ID 30135
+ORIGIN ABE
+DEST_AIRPORT_ID 11433
+DEST_AIRPORT_SEQ_ID 1143302
+DEST_CITY_MARKET_ID 31295
+DEST DTW
+ARR_DELAY -15.00
+ARR_DELAY_NEW 0.00
+CANCELLED 0.00
+CARRIER_DELAY 
+WEATHER_DELAY 
+NAS_DELAY 
+SECURITY_DELAY 
+LATE_AIRCRAFT_DELAY
+\end{lstlisting}
+
+\tiny Note: delay is measured in minutes and cancelled is 0 for no and 1 for yes 
+\\ 
+Note: some fields don't always contain data, this was just the first entry from the dataset
+\\
+\url{https://www.transtats.bts.gov/}
+% https://www.transtats.bts.gov/Tables.asp?QO_VQ=EFD&QO_anzr=Nv4yv0r\%FDb0-gvzr\%FDcr4s14zn0pr\%FDQn6n&QO_fu146_anzr=b0-gvzr
+\end{frame}
+
+
+
+\begin{frame}{How? \\ \small high level plan}
+
+\begin{enumerate}
+    \item Finding High probability of flight delays in a period
+    \begin{itemize}
+        \item Which days in a month
+        \item Which month in a year
+        \item Which quarter in a year
+    \end{itemize}
+    \item Find Trend in Flight Delays from year to year
+\end{enumerate}
+
+
+\end{frame}
+
+
+\end{document}

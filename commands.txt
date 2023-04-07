@@ -1,0 +1,35 @@
+scp -r folder user@ip:~
+
+scp -r user@ip:folder/file folder/
+
+start-dfs.sh
+
+start-yarn.sh
+
+hdfs dfsadmin -report
+
+hadoop fs -put folder/*.txt /dir
+
+hadoop fs -get /
+
+python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dis_materials/hadoop_1m.txt --output-dir hdfs:///dis_materials/output1 --no-output
+
+mapred streaming -files email_count_mapper.py,email_count_reducer.py \
+-input /dis_materials/hadoop_1m.txt \
+-output /dis_materials/output1 \
+-mapper "email_count_mapper.py" \
+-reducer "email_count_reducer.py"
+
+mapred streaming -files flight_mapper.py \
+-input /txt/2022-12.txt \
+-output /2022-12 \
+-mapper "flight_mapper.py"
+
+mapred streaming -files carrier_delay_map.py,carrier_delay_red.py \
+-input /2022-12/part-00000 \
+-output /test \
+-mapper "carrier_delay_map.py" \
+-reducer "carrier_delay_red.py"
+
+
+hadoop fs -text /folder/file/part* | less
