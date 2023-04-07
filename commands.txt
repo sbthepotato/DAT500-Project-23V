@@ -33,3 +33,5 @@ mapred streaming -files carrier_delay_map.py,carrier_delay_red.py \
 
 
 hadoop fs -text /folder/file/part* | less
+
+python3 -m Spark_Read_CSV 
