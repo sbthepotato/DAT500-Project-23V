@@ -57,3 +57,6 @@ columns downloaded:
 ## Commands Worth Remembering
 
 There is a list of frequently used commands in ``commands.txt``
+
+## Pyspark documentation link
+[Apache Spark - Pyspark](https://spark.apache.org/docs/3.2.1/api/python/getting_started/index.html)
