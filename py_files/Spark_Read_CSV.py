@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import pyspark 
+import pyspark
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
+from pyspark.sql.functions import to_timestamp, to_date
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -46,7 +47,9 @@ flightSchema = StructType() \
     .add("SECURITY_DELAY", "double")\
     .add("LATE_AIRCRAFT_DELAY", "double")
 
-flight_data=spark.read.csv("hdfs://namenode:9000/2022-12.csv", schema=flightSchema)
-flight_data.show(5)
+flight_data=spark.read.csv("hdfs://namenode:9000/2022-12.csv", schema=flightSchema)\
+        .withColumn("FL_DATE",to_date(to_timestamp("FL_DATE", "M/d/yyyy h:mm:ss a")))
+
+flight_data.select(flight_data.columns[:11]).show(15)
 
 flight_data.printSchema()
