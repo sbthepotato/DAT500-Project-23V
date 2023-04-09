@@ -3,7 +3,7 @@
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
-from pyspark.sql.functions import to_timestamp, to_date
+from pyspark.sql.functions import to_timestamp, to_date, sum
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -50,6 +50,13 @@ flightSchema = StructType() \
 flight_data=spark.read.csv("hdfs://namenode:9000/csv/2021-01.csv", schema=flightSchema)\
         .withColumn("FL_DATE",to_date(to_timestamp("FL_DATE", "M/d/yyyy h:mm:ss a")))
 
-flight_data.select(flight_data.columns[:11]).show(15)
+flight_data = flight_data.fillna(value=0)
 
-flight_data.printSchema()
+flight_group = flight_data.groupBy('OP_UNIQUE_CARRIER').agg(sum('DEP_DELAY_NEW')).alias('delay')
+
+flight_group.select('*').show()
+
+
+#flight_data.select(flight_data.columns[:32]).show(1000)
+
+#flight_data.printSchema()
