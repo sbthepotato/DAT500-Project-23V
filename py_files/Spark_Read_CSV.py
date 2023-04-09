@@ -47,7 +47,7 @@ flightSchema = StructType() \
     .add("SECURITY_DELAY", "double")\
     .add("LATE_AIRCRAFT_DELAY", "double")
 
-flight_data=spark.read.csv("hdfs://namenode:9000/2022-12.csv", schema=flightSchema)\
+flight_data=spark.read.csv("hdfs://namenode:9000/csv/2021-01.csv", schema=flightSchema)\
         .withColumn("FL_DATE",to_date(to_timestamp("FL_DATE", "M/d/yyyy h:mm:ss a")))
 
 flight_data.select(flight_data.columns[:11]).show(15)

@@ -22,7 +22,7 @@ mapred streaming -files email_count_mapper.py,email_count_reducer.py \
 
 mapred streaming -files flight_mapper.py \
 -input /txt/2022-12.txt \
--output /2022-12 \
+-output /csv/2022-12.csv \
 -mapper "flight_mapper.py"
 
 mapred streaming -files carrier_delay_map.py,carrier_delay_red.py \
