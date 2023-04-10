@@ -57,11 +57,18 @@ flight_data=spark.read.csv("hdfs://namenode:9000/csv/2021-01.csv", schema=flight
 
 flight_data = flight_data.fillna({'DEP_DELAY_NEW':0.0})
 
-flight_group = flight_data.groupBy('OP_UNIQUE_CARRIER', 'ORIGIN_AIRPORT_ID', 'DEST_AIRPORT_ID').agg(sum('DEP_DELAY_NEW').alias('delay'))
 
-flight_group = flight_group.orderBy(desc('delay'))
+delay_trends = flight_data.groupBy('YEAR', 'MONTH', 'OP_UNIQUE_CARRIER', 'ORIGIN_AIRPORT_ID', 'DEST_AIRPORT_ID').agg(sum('ARR_DELAY_NEW').alias('tot_arr_delay')
+                                                                                                                , round(avg('ARR_DELAY_NEW'), 2).alias('avg_arr_delay')
+                                                                                                                , max('ARR_DELAY_NEW').alias('max_arr_delay')
+                                                                                                                , count('CANCELLED').alias('nr_cancelled')
+                                                                                                                , count('DIVERTED').alias('nr_diverted')
+                                                                                                                , round(avg('AIR_TIME'), 2).alias('avg_airtime')
+                                                                                                                , count('*').alias('tot_flights'))
 
-flight_group.select('*').show(10)
+delay_trends = delay_trends.orderBy(desc('avg_arr_delay'))
+
+delay_trends.select('*').where(delay_trends.tot_flights > 100).show(20)
 
 #flight_data.select(flight_data.columns[:32]).show(1000)
 #flight_data.printSchema()
