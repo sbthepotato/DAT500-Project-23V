@@ -3,9 +3,14 @@
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
-from pyspark.sql.functions import to_timestamp, to_date, sum
+from pyspark.sql.functions import *
+from delta import *
 
-spark = SparkSession.builder.getOrCreate()
+builder = pyspark.sql.SparkSession.builder.appName("US_Flight_Delays") \
+            .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+            .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+
+spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
 flightSchema = StructType() \
     .add("YEAR", "integer")\
@@ -29,34 +34,38 @@ flightSchema = StructType() \
     .add("DEST", "string")\
     .add("DEST_CITY_NAME", "string")\
     .add("DEST_STATE_NM", "string")\
-    .add("DEP_DELAY", "double")\
-    .add("DEP_DELAY_NEW", "double")\
-    .add("DEP_DEL15", "double")\
-    .add("ARR_DELAY", "double")\
-    .add("ARR_DELAY_NEW", "double")\
-    .add("ARR_DEL15", "double")\
-    .add("CANCELLED", "double")\
-    .add("CANCELLATION_CODE", "string")\
-    .add("DIVERTED", "double")\
-    .add("AIR_TIME", "double")\
-    .add("DISTANCE", "double")\
-    .add("DISTANCE_GROUP", "integer")\
-    .add("CARRIER_DELAY", "double")\
-    .add("WEATHER_DELAY", "double")\
-    .add("NAS_DELAY", "double")\
-    .add("SECURITY_DELAY", "double")\
-    .add("LATE_AIRCRAFT_DELAY", "double")
+    .add("DEP_DELAY", "float")\
+    .add("DEP_DELAY_NEW", "float")\
+    .add("DEP_DEL15", "float")\
+    .add("ARR_DELAY", "float")\
+    .add("ARR_DELAY_NEW", "float")\
+    .add("ARR_DEL15", "float")\
+    .add("CANCELLED", "float")\
+    .add("CANCELLATION_CODE", "float")\
+    .add("DIVERTED", "float")\
+    .add("AIR_TIME", "float")\
+    .add("DISTANCE", "float")\
+    .add("DISTANCE_GROUP", "float")\
+    .add("CARRIER_DELAY", "float")\
+    .add("WEATHER_DELAY", "float")\
+    .add("NAS_DELAY", "float")\
+    .add("SECURITY_DELAY", "float")\
+    .add("LATE_AIRCRAFT_DELAY", "float")
 
 flight_data=spark.read.csv("hdfs://namenode:9000/csv/2021-01.csv", schema=flightSchema)\
         .withColumn("FL_DATE",to_date(to_timestamp("FL_DATE", "M/d/yyyy h:mm:ss a")))
 
-flight_data = flight_data.fillna(value=0)
+flight_data = flight_data.fillna({'DEP_DELAY_NEW':0.0})
 
-flight_group = flight_data.groupBy('OP_UNIQUE_CARRIER').agg(sum('DEP_DELAY_NEW')).alias('delay')
+flight_group = flight_data.groupBy('OP_UNIQUE_CARRIER', 'ORIGIN_AIRPORT_ID', 'DEST_AIRPORT_ID').agg(sum('DEP_DELAY_NEW').alias('delay'))
 
-flight_group.select('*').show()
+flight_group = flight_group.orderBy(desc('delay'))
 
+flight_group.select('*').show(10)
 
 #flight_data.select(flight_data.columns[:32]).show(1000)
-
 #flight_data.printSchema()
+
+# Delta table creation
+#flight_data.write.format("delta").mode("overwrite").saveAsTable("sample_delta_table")
+#DeltaTable.isDeltaTable(spark, "sample_delta_table") # True
