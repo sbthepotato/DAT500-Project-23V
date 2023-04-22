@@ -6,32 +6,47 @@ start-dfs.sh
 
 start-yarn.sh
 
+$SPARK_HOME/sbin/start-all.sh
+$SPARK_HOME/sbin/start-history-server.sh
+
 hdfs dfsadmin -report
 
 hadoop fs -put folder/*.txt /dir
 
 hadoop fs -get /
 
-python3 count_sum.py --hadoop-streaming-jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -r hadoop hdfs:///dis_materials/hadoop_1m.txt --output-dir hdfs:///dis_materials/output1 --no-output
-
-mapred streaming -files email_count_mapper.py,email_count_reducer.py \
--input /dis_materials/hadoop_1m.txt \
--output /dis_materials/output1 \
--mapper "email_count_mapper.py" \
--reducer "email_count_reducer.py"
-
 mapred streaming -files flight_mapper.py \
--input /txt/2022-12.txt \
--output /csv/2022-12.csv \
+-input /txt/2022-12.txt,/txt/2022-11.txt,/txt/2022-10.txt,/txt/2022-09.txt,/txt/2022-08.txt,/txt/2022-07.txt,/txt/2022-06.txt,/txt/2022-05.txt,/txt/2022-04.txt,/txt/2022-03.txt,/txt/2022-02.txt,/txt/2022-01.txt \
+-output /csv/2022.csv \
 -mapper "flight_mapper.py"
 
-mapred streaming -files carrier_delay_map.py,carrier_delay_red.py \
--input /2022-12/part-00000 \
--output /test \
--mapper "carrier_delay_map.py" \
--reducer "carrier_delay_red.py"
+mapred streaming -files flight_mapper.py \
+-input /txt/2021-12.txt,/txt/2021-11.txt,/txt/2021-10.txt,/txt/2021-09.txt,/txt/2021-08.txt,/txt/2021-07.txt,/txt/2021-06.txt,/txt/2021-05.txt,/txt/2021-04.txt,/txt/2021-03.txt,/txt/2021-02.txt,/txt/2021-01.txt \
+-output /csv/2021.csv \
+-mapper "flight_mapper.py"
 
+mapred streaming -files flight_mapper.py \
+-input /txt/2020-12.txt,/txt/2020-11.txt,/txt/2020-10.txt,/txt/2020-09.txt,/txt/2020-08.txt,/txt/2020-07.txt,/txt/2020-06.txt,/txt/2020-05.txt,/txt/2020-04.txt,/txt/2020-03.txt,/txt/2020-02.txt,/txt/2020-01.txt \
+-output /csv/2020.csv \
+-mapper "flight_mapper.py"
+
+mapred streaming -files flight_mapper.py \
+-input /txt/2019-12.txt,/txt/2019-11.txt,/txt/2019-10.txt,/txt/2019-09.txt,/txt/2019-08.txt,/txt/2019-07.txt,/txt/2019-06.txt,/txt/2019-05.txt,/txt/2019-04.txt,/txt/2019-03.txt,/txt/2019-02.txt,/txt/2019-01.txt \
+-output /csv/2019.csv \
+-mapper "flight_mapper.py"
+
+mapred streaming -files flight_mapper.py \
+-input /txt/2018-12.txt,/txt/2018-11.txt,/txt/2018-10.txt,/txt/2018-09.txt,/txt/2018-08.txt,/txt/2018-07.txt,/txt/2018-06.txt,/txt/2018-05.txt,/txt/2018-04.txt,/txt/2018-03.txt,/txt/2018-02.txt,/txt/2018-01.txt \
+-output /csv/2018.csv \
+-mapper "flight_mapper.py"
+
+mapred streaming -files flight_mapper.py \
+-input /txt/2020-12.txt,/txt/2020-11.txt,/txt/2020-10.txt,/txt/2020-09.txt,/txt/2020-08.txt,/txt/2020-07.txt,/txt/2020-06.txt,/txt/2020-05.txt,/txt/2020-04.txt,/txt/2020-03.txt,/txt/2020-02.txt,/txt/2020-01.txt,/txt/2020-12.txt,/txt/2020-11.txt,/txt/2020-10.txt,/txt/2020-09.txt,/txt/2020-08.txt,/txt/2020-07.txt,/txt/2020-06.txt,/txt/2020-05.txt,/txt/2020-04.txt,/txt/2020-03.txt,/txt/2020-02.txt,/txt/2020-01.txt,/txt/2022-12.txt,/txt/2022-11.txt,/txt/2022-10.txt,/txt/2022-09.txt,/txt/2022-08.txt,/txt/2022-07.txt,/txt/2022-06.txt,/txt/2022-05.txt,/txt/2022-04.txt,/txt/2022-03.txt,/txt/2022-02.txt,/txt/2022-01.txt,/txt/2019-12.txt,/txt/2019-11.txt,/txt/2019-10.txt,/txt/2019-09.txt,/txt/2019-08.txt,/txt/2019-07.txt,/txt/2019-06.txt,/txt/2019-05.txt,/txt/2019-04.txt,/txt/2019-03.txt,/txt/2019-02.txt,/txt/2019-01.txt,/txt/2018-12.txt,/txt/2018-11.txt,/txt/2018-10.txt,/txt/2018-09.txt,/txt/2018-08.txt,/txt/2018-07.txt,/txt/2018-06.txt,/txt/2018-05.txt,/txt/2018-04.txt,/txt/2018-03.txt,/txt/2018-02.txt,/txt/2018-01.txt \
+-output /csv/all-years.csv \
+-mapper "flight_mapper.py"
 
 hadoop fs -text /folder/file/part* | less
 
 python3 -m Spark_Read_CSV 
+
+spark-submit file.py
