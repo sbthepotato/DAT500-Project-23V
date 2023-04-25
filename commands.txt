@@ -6,10 +6,17 @@ start-dfs.sh
 
 start-yarn.sh
 
-$SPARK_HOME/sbin/start-all.sh
 $SPARK_HOME/sbin/start-history-server.sh
+$SPARK_HOME/sbin/start-master.sh
+$SPARK_HOME/sbin/start-workers.sh
+
+$SPARK_HOME/sbin/stop-history-server.sh
+$SPARK_HOME/sbin/stop-master.sh
+$SPARK_HOME/sbin/stop-workers.sh
 
 hdfs dfsadmin -report
+
+hdfs  dfsadmin -safemode leave
 
 hadoop fs -put folder/*.txt /dir
 
