@@ -5,6 +5,7 @@
 csv/
 txt/
 test/
+htmlplots/
 lookup tables/
 py_files/sb-test.py
 py_files/carrier_delay_map.py
