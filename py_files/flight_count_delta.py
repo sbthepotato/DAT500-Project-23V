@@ -8,7 +8,7 @@ from delta import *
 from pyspark.sql import Window
 
 if len(sys.argv) > 1:
-  print('opeing the hdfs://namenode:9000/csv/'+sys.argv[1]+'.csv file')
+  print('opening the hdfs://namenode:9000/csv/'+sys.argv[1]+'.csv file')
 else:
   sys.exit()
 
@@ -104,7 +104,7 @@ flight_data = flight_data.drop("id")
 
 #flight_data.select('*').where(flight_data.flight_count > 100).show(100, truncate=True)
 
-# delta table stuff
+# Storing in Delta Table
 if DeltaTable.isDeltaTable(spark, "hdfs://namenode:9000/spark-warehouse/flight_data_table"):
   # Perform the upsert operation
   deltaDF = DeltaTable.forPath(spark, "hdfs://namenode:9000/spark-warehouse/flight_data_table")
@@ -118,7 +118,9 @@ if DeltaTable.isDeltaTable(spark, "hdfs://namenode:9000/spark-warehouse/flight_d
         .merge(flight_data.alias('upsert'), merge_condition) \
         .whenMatchedUpdateAll() \
         .whenNotMatchedInsertAll() \
-        .execute()  
+        .execute()
+  print("Delta Table called 'flight_data_table' updated.")  
 else:
   # Create new delta table
   flight_data.write.format("delta").mode("overwrite").saveAsTable("flight_data_table")
+  print("Delta Table called 'flight_data_table' created.")
