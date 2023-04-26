@@ -1,0 +1,35 @@
+On all nodes:-
+wget https://downloads.apache.org/spark/spark-3.2.4/spark-3.2.4-bin-hadoop3.2.tgz
+tar -xzvf spark-3.2.4-bin-hadoop3.2.tgz
+sudo mv spark-3.2.4-bin-hadoop3.2 /usr/local/spark
+
+cd /usr/local
+sudo tee -a ~/.bashrc > /dev/null << EOL
+
+export SPARK_HOME=/usr/local/spark
+export PATH=$PATH:$SPARK_HOME/bin
+EOL
+
+source ~/.bashrc
+
+cd spark/conf 
+cp spark-env.sh.template spark-env.sh
+
+sudo tee -a spark-env.sh > /dev/null << EOL
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+export SPARK_WORKER_CORES=4
+EOL
+
+sudo tee slaves > /dev/null << EOL
+datanode1
+datanode2
+datanode3
+EOL
+
+
+On Namenode:
+$SPARK_HOME/sbin/start-all.sh
+
+# Validate services running on nodes -> jps
