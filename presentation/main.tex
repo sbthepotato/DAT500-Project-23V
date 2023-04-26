@@ -1,0 +1,472 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12}
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.9}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{uislight}{HTML}{0a3c9f}
+\definecolor{uisdark}{HTML}{0a3ca0}
+\definecolor{uisorange}{HTML}{ff9e3d}
+\definecolor{uisgrey}{HTML}{e1e1e1}
+
+\lstdefinestyle{mystyle}{
+    language=Python,
+    basicstyle=\ttfamily\tiny,
+    morekeywords={self},
+    keywordstyle=\ttb\color{deepblue},
+    emph={MyClass,__init__},
+    emphstyle=\ttb\color{deepred},
+    stringstyle=\color{deepgreen},
+    frame=tb,
+    showstringspaces=false
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\setbeamercolor{palette primary}{bg=uisdark,fg=white}
+\setbeamercolor{frametitle}{bg=uislight}
+\setbeamercolor{progress bar}{fg=uisorange, bg=uisgrey}
+
+\makeatletter
+\setlength{\metropolis@titleseparator@linewidth}{1pt}
+\setlength{\metropolis@progressonsectionpage@linewidth}{1pt}
+\setlength{\metropolis@progressinheadfoot@linewidth}{1pt}
+\makeatother
+
+
+\title{Finding Flight Delay Trends}
+\subtitle{DAT500 Project Group 17}
+% \date{\today}
+\date{}
+\author{Bhakti Prabhu \& Stephan F. W. Brandasu}
+\institute{Faculty of Science and Technology}
+
+\titlegraphic{\hfill\includegraphics[height=2cm]{images/logo.png}}
+
+\begin{document}
+
+\maketitle
+
+
+\begin{frame}{Why \& What\\ \small the use case}
+\begin{multicols}{2}
+As a traveller: 
+\begin{enumerate}
+    \item Not miss any important meetings/events/functions.
+    \item Pre-plan journey
+    \item Have idea of buffer time while flight booking
+\end{enumerate}
+As an airline:
+\begin{enumerate}
+    \item  know when to increase workforce.
+    \item Opportunity to improve over competitors.
+\end{enumerate}
+\columnbreak
+Objective:
+\begin{enumerate}
+    \item visualise delay trends over time
+    \item how well do the airlines catch up when departing late
+    \item how often are flights cancelled
+    \item are longer flights delayed more often
+\end{enumerate}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}{The Dataset}
+From 20GB of unstructured .txt files to 6GB of .csv
+\begin{multicols}{2}
+\begin{figure}
+    \centering
+    \includegraphics[width=5cm]{images/unstructured_dataset_size.png}
+    \label{fig:unstructured}
+\end{figure}
+\columnbreak
+\begin{figure}
+    \centering
+    \includegraphics[width=5cm]{images/structured_dataset_size.png}
+    \label{fig:structured}
+\end{figure}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}{The Dataset}
+\tiny{}
+\input{tikzfigures/dataset.tex}
+\end{frame}
+
+
+\begin{frame}[fragile]{Mapping}
+\begin{multicols}{2}
+\begin{lstlisting}
+import sys
+
+row = []
+
+for line in sys.stdin:
+  line = line.strip().replace(',','').split()
+
+  if line[0] == "LATE_AIRCRAFT_DELAY":
+    try:
+      data = line[1]
+    except IndexError:
+      data = ' '
+    row.append(data)
+    print(','.join(row))
+    row = []
+  else:
+    try:
+      data = ' '.join(line[1:])
+    except IndexError:
+      data = ' '
+    row.append(data)
+\end{lstlisting}
+\columnbreak
+\begin{itemize}
+    \item create array of each row
+    \item remove any unwanted commas from cell
+    \item check for last column of row
+    \item catch error in case of no data in current column
+    \item print row
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}[fragile]{Reading the data}
+\begin{multicols}{2}
+\begin{lstlisting}
+flight_data = spark.read.csv('hdfs://namenode:9000/csv/'+sys.argv[1]+'.csv', schema=flightSchema)\
+.withColumn('FL_DATE', to_date(to_timestamp('FL_DATE', 'M/d/yyyy h:mm:ss a')))
+
+flight_data = flight_data.select( 'year'
+                        , 'month'
+                        , 'fl_date'
+                        , 'op_unique_carrier'
+                        , 'origin_airport_id'
+                        , 'dest_airport_id'
+                        , 'dep_delay_new'
+                        , 'arr_delay_new'
+                        , 'cancelled'
+                        , 'diverted'
+                        , 'air_time')
+
+flight_data = flight_data.na.drop(subset=['year', 'origin_airport_id', 'dest_airport_id', 'fl_date'])
+flight_data = flight_data.fillna({'arr_delay_new': 0.0})
+\end{lstlisting}
+\columnbreak
+\begin{itemize}
+    \item select only relevant columns
+    \item drop any rows that are missing essential information
+    \item fill 0.0 in rows to avoid issues during calculations
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}[fragile]{Manipulating the data - step 1}
+\begin{multicols}{2}
+\begin{lstlisting}
+# grab the fl_date of the flight with the highest delay for a given group
+windowSpec = Window.partitionBy(
+      'year'
+    , 'month'
+    , 'op_unique_carrier'
+    , 'origin_airport_id'
+    , 'dest_airport_id').orderBy(col('arr_delay_new').desc())
+    
+arr_delay_dates = flight_data.withColumn(
+        'rank'
+    , rank().over(windowSpec)
+).filter(
+    col('rank') == 1
+).groupBy(
+      'year'
+    , 'month'
+    , 'op_unique_carrier'
+    , 'origin_airport_id'
+    , 'dest_airport_id'
+).agg(
+round(max('arr_delay_new'), 2).alias('max_arr_delay')
+, first('fl_date').alias('max_arr_delay_fl_date')
+)
+\end{lstlisting}
+\columnbreak
+\begin{itemize}
+    \item create a window sorted by the arrival delay
+    \item select the top delay date by only selecting single row
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}[fragile]{Manipulating the data - step 2}
+\begin{multicols}{2}
+\begin{lstlisting}
+flight_data = flight_data.groupBy('year'
+, 'month'
+, 'op_unique_carrier'
+, 'origin_airport_id'
+, 'dest_airport_id').agg( round(avg('arr_delay_new'), 2).alias('avg_arr_delay')
+    , round(percentile_approx('arr_delay_new', 0.5), 2).alias('med_arr_delay')
+    , round(avg(col('dep_delay_new') - col('arr_delay_new')), 2).alias('avg_time_recovered')
+    , sum('diverted').alias('nr_diverted')
+    , round(avg('air_time'), 2).alias('avg_airtime')
+    , count('*').alias('flight_count')
+    , sum('cancelled').alias('nr_cancelled'))
+
+flight_data = arr_delay_dates.join( flight_data
+    , on=['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id']
+    , how='left')
+\end{lstlisting}
+\columnbreak
+\begin{itemize}
+    \item do a groupby select for to grab delay statistics
+    \item each result is rounded to 2 decimals to avoid ugly numbers
+    \item join the result of this operation with the previous one
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}[fragile]{Upserting into the DeltaTable}
+\begin{lstlisting}
+# Checking if Table exists
+if DeltaTable.isDeltaTable(spark, "hdfs://namenode:9000/spark-warehouse/sample_flight_table"):
+    # Perform the upsert operation
+    deltaDF = DeltaTable.forPath(spark, "hdfs://namenode:9000/spark-warehouse/sample_flight_table")
+    merge_condition = "existing.year = upsert.year \
+    AND existing.month = upsert.month \
+    AND existing.op_unique_carrier = upsert.op_unique_carrier \
+    AND existing.origin_airport_id = upsert.origin_airport_id \
+    AND existing.dest_airport_id = upsert.dest_airport_id "
+
+    deltaDF.alias('existing') \
+        .merge(flight_data.alias('upsert'), merge_condition) \
+        .whenMatchedUpdateAll() \
+        .whenNotMatchedInsertAll() \
+        .execute()  
+else:
+    # Create new delta table
+    flight_data.write.format("delta").mode("overwrite").saveAsTable("sample_flight_table")
+\end{lstlisting}
+
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{Skew \& Spill}
+\begin{multicols}{2}
+
+Optmization (spark-defaults.conf)
+\begin{lstlisting}
+spark.executor.memory                   6g
+spark.exector.instances                 3
+spark.executor.cores                    4
+spark.sql.shuffle.partition             64
+spark.sql.adaptive.skewedJoin.enabled   true
+spark.sql.adaptive.skewJoin.enabled     true
+\end{lstlisting}
+
+\columnbreak
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c|c}
+        \textbf{Spill} & \textbf{Memory} & \textbf{Disk} \\
+        \hline 
+        \textbf{Before} & 3.5 GiB & 177.8 MiB \\
+        \hline
+        \textbf{After} & 128.4 MiB & 7.1 MiB 
+        \end{tabular}
+    \label{tab:spill}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=5cm]{images/skew.png}
+    \label{fig:skew}
+\end{figure}
+\end{multicols}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{Serialization}
+\begin{multicols}{2}
+Using UDF's to clean the data
+\begin{lstlisting}
+def replace_null(value, default):
+  if value is None:
+    return default
+  return value
+
+def drop_null(*cols):
+  for col in cols:
+    if col is None:
+      return False
+  return True
+
+replace_null_udf = udf(lambda value, default: replace_null(value, default), FloatType())
+drop_null_udf = udf(lambda *cols: drop_null(*cols), BooleanType())
+
+flight_data = flight_data.filter(drop_null_udf(*[col(c) for c in ['year', 'origin_airport_id', 'dest_airport_id', 'fl_date']]))
+flight_data = flight_data.withColumn('arr_delay_new', replace_null_udf(col('arr_delay_new'), lit(0.0)))
+\end{lstlisting}
+\columnbreak
+Performance difference between each type of join
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c|c}
+      & \textbf{normal} & \textbf{udf} \\
+      \hline
+     \textbf{minutes} & 2.8  & 7.1
+    \end{tabular}
+    \label{tab:udf}
+\end{table}
+
+\end{multicols}
+\end{frame}
+
+
+\begin{frame}[fragile]{Shuffle}
+\begin{multicols}{2}
+sort merge join
+\begin{lstlisting}
+arr_delay_dates = arr_delay_dates.sort(['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id'])
+flight_data = flight_data.sort(['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id'])
+
+# join the highest delay with the res of the group
+flight_data = arr_delay_dates.join( flight_data
+, on=['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id']
+, how='left')
+\end{lstlisting}
+\columnbreak
+broadcast join
+\begin{lstlisting}
+flight_data = arr_delay_dates.join( 
+    broadcast(flight_data)
+    , on=['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id']
+    , how='left')
+\end{lstlisting}
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c|c}
+      & \textbf{Sort Merge} & \textbf{Broadcast} \\
+      \hline
+     \textbf{Minutes} & 4.1  & 3.2
+    \end{tabular}
+    \label{tab:join}
+\end{table}
+\end{multicols}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Graphs from the delta table}
+
+\begin{lstlisting}
+builder = SparkSession.builder.appName('flight_plot')
+spark = configure_spark_with_delta_pip(builder).getOrCreate()
+
+flight_data = spark.read.format('delta').load('hdfs://namenode:9000/spark-warehouse/flight_data_table')
+
+flight_data = flight_data.filter((flight_data.op_unique_carrier == 'AA') & (flight_data.origin_airport_id == 12892) & (flight_data.dest_airport_id == 12478))
+
+flight_data = flight_data.orderBy('year', 'month')
+
+flight_data = flight_data.withColumn('year_month', concat('year', lit('-'), 'month'))
+
+flight_data = flight_data.toPandas()
+
+avgdelay = normalize(flight_data, "avg_arr_delay")
+flightcount = normalize(flight_data, "flight_count")
+
+data = [
+plt.Scatter(x=flight_data.year_month
+            , y=avgdelay
+            , name='average flight delay over time'
+            , text=flight_data.avg_arr_delay),
+plt.Scatter(x=flight_data.year_month
+            , y=flightcount
+            , name='nr of flights'
+            , text=flight_data.flight_count),
+]
+
+fig = plt.Figure(data, layout_title_text='delay over time with nr of flights normalized')
+plot(fig, filename='plot.html')
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{A Graph!}
+\begin{figure}
+    \centering
+    \includegraphics[width=11cm]{images/2019-2022.png}
+    \label{fig:my_label}
+\end{figure}
+\end{frame}
+
+\begin{frame}{A Graph! with a new year}
+\begin{figure}
+    \centering
+    \includegraphics[width=11cm]{images/2018-2022.png}
+    \label{fig:my_label}
+\end{figure}
+\end{frame}
+
+\begin{frame}{A Graph! with bad information for 1 year year}
+\begin{figure}
+    \centering
+    \includegraphics[width=11cm]{images/2018-2022bad.png}
+    \label{fig:my_label}
+\end{figure}
+\end{frame}
+
+
+
+%\appendix
+
+%\begin{frame}[allowframebreaks]{References}
+
+%  \bibliography{bibliography}
+%  \bibliographystyle{abbrv}
+
+%\end{frame}
+
+\end{document}
