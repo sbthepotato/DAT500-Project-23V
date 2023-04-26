@@ -1,0 +1,94 @@
+\usetikzlibrary{decorations.pathreplacing,shapes,arrows,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes.geometric, arrows}
+
+
+\definecolor{mycolor1}{RGB}{0, 0, 128} % Navy
+\definecolor{mycolor2}{RGB}{30, 144, 255} % Dodger Blue
+\definecolor{mycolor3}{RGB}{34, 139, 34} % Forest Green
+\definecolor{mycolor4}{RGB}{255, 165, 0} % Orange
+\definecolor{mycolor5}{RGB}{218, 112, 214} % Orchid
+\definecolor{mycolor6}{RGB}{255, 0, 255} % Magenta
+\definecolor{mycolor7}{RGB}{128, 0, 0} % Maroon
+\definecolor{mycolor8}{RGB}{255, 192, 203} % Pink
+\definecolor{mycolor9}{RGB}{46, 139, 87} % Sea Green
+\definecolor{mycolor10}{RGB}{255, 99, 71} % Tomato
+\definecolor{mycolor11}{RGB}{128, 128, 128} % Gray
+
+
+\tikzstyle{arrow} = [line width=0.10mm,->,shorten >=8pt, shorten <=2pt]
+
+\begin{tikzpicture}[node distance=0.21cm and 3.5cm]
+\tikzstyle{every node}=[font=\ttfamily\tiny]
+
+\node (a1)[text=mycolor1]{year};
+\node (a2)[below of=a1] {quarter};
+\node (a3)[below of=a2, text=mycolor2] {month};
+\node (a4)[below of=a3] {day\_of\_month};
+\node (a5)[below of=a4] {day\_of\_week};
+\node (a6)[below of=a5, text=mycolor3] {fl\_date};
+\node (a7)[below of=a6, text=mycolor4] {op\_unique\_carrier};
+\node (a8)[below of=a7] {tail\_num};
+\node (a9)[below of=a8] {op\_carrier\_fl\_num};
+\node (a10)[below of=a9, text=mycolor5] {origin\_airport\_id};
+\node (a11)[below of=a10] {origin\_airport\_seq\_id};
+\node (a12)[below of=a11] {origin\_city\_market\_id};
+\node (a13)[below of=a12] {origin};
+\node (a14)[below of=a13] {origin\_city\_name};
+\node (a15)[below of=a14] {origin\_state\_nm};
+\node (a16)[below of=a15, text=mycolor6] {dest\_airport\_id};
+\node (a17)[below of=a16] {dest\_airport\_seq\_id};
+\node (a18)[below of=a17] {dest\_city\_market\_id};
+\node (a19)[below of=a18] {dest};
+\node (a20)[below of=a19] {dest\_city\_name};
+\node (a21)[below of=a20] {dest\_state\_nm};
+\node (a22)[below of=a21] {dep\_delay};
+\node (a23)[below of=a22, text=mycolor7] {dep\_delay\_new};
+\node (a24)[below of=a23] {dep\_del15};
+\node (a25)[below of=a24] {arr\_delay};
+\node (a26)[below of=a25, text=mycolor8] {arr\_delay\_new};
+\node (a27)[below of=a26] {arr\_del15};
+\node (a28)[below of=a27, text=mycolor9] {cancelled};
+\node (a29)[below of=a28] {cancellation\_code};
+\node (a30)[below of=a29, text=mycolor10] {diverted};
+\node (a31)[below of=a30, text=mycolor11] {air\_time};
+\node (a32)[below of=a31] {distance};
+\node (a33)[below of=a32] {distance\_group};
+\node (a34)[below of=a33] {carrier\_delay};
+\node (a35)[below of=a34] {weather\_delay};
+\node (a36)[below of=a35] {nas\_delay};
+\node (a37)[below of=a36] {security\_delay};
+\node (a38)[below of=a37] {late\_aircraft\_delay};
+
+
+\node (b1)[right =of a1, text=mycolor1]{year};
+\node (b2)[below of= b1, text=mycolor2] {month};
+\node (b3)[below of= b2, text=mycolor3] {fl\_date};
+\node (b4)[below of= b3, text=mycolor4] {op\_unique\_carrier};
+\node (b5)[below of= b4, text=mycolor5] {origin\_airport\_id};
+\node (b6)[below of= b5, text=mycolor6] {dest\_airport\_id};
+\node (b7)[below of= b6, text=mycolor7] {dep\_delay\_new};
+\node (b8)[below of= b7, text=mycolor8] {arr\_delay\_new};
+\node (b9)[below of= b8, text=mycolor9] {cancelled};
+\node (b10)[below of= b9, text=mycolor10] {diverted};
+\node (b11)[below of= b10, text=mycolor11] {air\_time};
+
+
+\node (c1)[right =of b1, text=mycolor1]{year};
+\node (c2)[below of= c1, text=mycolor2] {month};
+\node (c3)[below of= c2, text=mycolor4] {op\_unique\_carrier};
+\node (c4)[below of= c3, text=mycolor5] {origin\_airport\_id};
+\node (c5)[below of= c4, text=mycolor6] {dest\_airport\_id};
+\node (c6)[below of= c5, text=mycolor8] {max\_arr\_delay};
+\node (c7)[below of= c6, text=mycolor3] {max\_arr\_delay\_fl\_date};
+\node (c8)[below of= c7, text=mycolor8] {avg\_arr\_delay};
+\node (c9)[below of= c8, text=mycolor8] {med\_arr\_delay};
+\node (c10)[below of= c9, text=mycolor6] {avg\_time\_recovered};
+\node (c11)[below of= c10, text=mycolor10] {nr\_diverted};
+\node (c12)[below of= c11, text=mycolor11] {avg\_airtime};
+\node (c13)[below of= c12] {flight\_count};
+\node (c14)[below of= c13, text=mycolor9] {nr\_cancelled};
+
+
+
+\end{tikzpicture}

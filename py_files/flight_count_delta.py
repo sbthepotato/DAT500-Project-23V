@@ -72,33 +72,31 @@ flight_data = flight_data.groupBy('year'
 																												, sum('cancelled').alias('nr_cancelled'))
 
 # join the highest delay with the res of the group
-flight_data = arr_delay_dates.join( flight_data
-																	, on=['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id']
-																	, how='left')
+flight_data = arr_delay_dates.join( 
+    broadcast(flight_data)
+	, on=['year', 'month', 'op_unique_carrier', 'origin_airport_id', 'dest_airport_id']
+	, how='left')
 
 # read the airports and airlines lookup tables
 airports = spark.read.csv('hdfs://namenode:9000/lookup_tables/airport_id.csv', schema=numIdSchema)
 carriers = spark.read.csv('hdfs://namenode:9000/lookup_tables/unique_carrier.csv', schema=StringIdSchema)
 
 
-flight_data = flight_data.join(
-		carriers.select('id', col('val').alias('airline'))
+flight_data = flight_data.join( 
+		broadcast(carriers.select('id', col('val').alias('airline')))
 	, flight_data['op_unique_carrier'] == carriers['id']
-	, how="left"
-)
+	, how='left')
 
-flight_data = flight_data.join(
-		airports.select('id', col('val').alias('origin_airport'))
+flight_data = flight_data.join(	
+		broadcast(airports.select('id', col('val').alias('origin_airport')))
 	, flight_data['origin_airport_id'] == airports['id']
-	, how="left"
-)
+	, how='left')
 
 airports_alias = airports.alias('airports_alias')
-flight_data = flight_data.join(
-		airports_alias.select('id', col('val').alias('dest_airport'))
+flight_data = flight_data.join( 
+    broadcast(airports_alias.select('id', col('val').alias('dest_airport')))
 	, flight_data['dest_airport_id'] == airports_alias['id']
-	, how="left"
-)
+	, how='left')
 
 flight_data = flight_data.drop("id")
 

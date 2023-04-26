@@ -7,7 +7,7 @@ row = []
 for line in sys.stdin:
   line = line.strip().replace(',','').split()
 
-  if line[0] == "LATE_AIRCRAFT_DELAY":
+  if line[0].lower() == 'late_aircraft_delay':
     try:
       data = line[1]
     except IndexError:

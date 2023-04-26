@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 
+import sys
 import pyspark
 from flight_schemas import *
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from delta import *
 from pyspark.sql import Window
 
+if len(sys.argv) > 1:
+  print('opening the hdfs://namenode:9000/csv/'+sys.argv[1]+'.csv file')
+else:
+  sys.exit()
+
 builder = pyspark.sql.SparkSession.builder.appName('flight_count')
-# .config('spark.sql.extensions', 'io.delta.sql.DeltaSparkSessionExtension') \
-# .config('spark.sql.catalog.spark_catalog', 'org.apache.spark.sql.delta.catalog.DeltaCatalog')
 
 spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
-flight_data = spark.read.csv('hdfs://namenode:9000/csv/all-years.csv', schema=flightSchema)\
+flight_data = spark.read.csv('hdfs://namenode:9000/csv/'+sys.argv[1]+'.csv', schema=flightSchema)\
 	.withColumn('FL_DATE', to_date(to_timestamp('FL_DATE', 'M/d/yyyy h:mm:ss a')))
 
 # select relevant columns, dropping the rest
@@ -98,4 +101,5 @@ flight_data = flight_data.join(
 	, how="left"
 )
 
-#flight_data.select('year', 'month', 'airline', 'origin_airport', 'dest_airport', 'max_arr_delay', 'max_arr_delay_fl_date', 'avg_arr_delay', 'med_arr_delay', 'avg_time_recovered', 'nr_diverted', 'avg_airtime', 'flight_count', 'nr_cancelled').where(flight_data.flight_count > 100).show(100, truncate=True)
+#flight_data.select('*').where(flight_data.flight_count > 100).show(30, truncate=True)
+flight_data.count()
