@@ -22,7 +22,7 @@ hadoop fs -put folder/*.txt /dir
 
 hadoop fs -get /
 
-jps
+nano $SPARK_HOME/conf/spark-defaults.conf
 
 mapred streaming -files flight_mapper.py \
 -input /txt/2022-12.txt,/txt/2022-11.txt,/txt/2022-10.txt,/txt/2022-09.txt,/txt/2022-08.txt,/txt/2022-07.txt,/txt/2022-06.txt,/txt/2022-05.txt,/txt/2022-04.txt,/txt/2022-03.txt,/txt/2022-02.txt,/txt/2022-01.txt \
