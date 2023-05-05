@@ -1,0 +1,18 @@
+The results from all of our optimisations can be seen in table \ref{tab:performance}. It should be noted that each optimisation builds on top of the last one, this means that after applying an optimisation that optimisation is also present for the next optimisation in the table. The only exception to this are the two shuffle optimisations, since these are affecting the same part of the code these had to replace each other.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c}
+        Problem to solve & Optimisation & Execution time (min.)\\
+        \hline
+        baseline code & - & 2.4 \\
+        Spill & Setting partitions to 48 & 2\\
+        Serialization & Eliminating UDF's & 1.6 \\
+        Shuffle 1 & Using Broadcast joins & 1.3\\
+        Shuffle 2 & Using Sort Merge joins & 1.4\\
+    \end{tabular}
+    \caption{the optimisation results}
+    \label{tab:performance}
+\end{table}
+
+With these results we can see the reducing the spill and getting rid of the UDF's had the largest performance impact. while forcing the code to use one specific type of join made a relatively smaller difference. The difference between the two types of joins is negligible and considering how short the over all run time of the program is it could be argued they are within margin of error of each other.

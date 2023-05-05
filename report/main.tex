@@ -1,0 +1,68 @@
+%%%% 
+% This is a template for project reports in the subject DAT620 at the
+% Department of Electrical Engineering and Computer Science,
+% University of Stavanger.
+% 
+% The template is based on the ACM conference template 
+% it was edited by Leander Jehl and Hein Meling
+\documentclass[sigconf]{acmart}
+
+\input{dat500-setup}
+
+%In the preamble file you can include packages and define macros.
+\input{preamble}
+
+\begin{document}
+%TODO: Replace the title with your project title.
+\title{Flight Delay Trends}
+%you may use a subtitle
+\subtitle{DAT500 project in Spring of 2023}
+
+%TODO replace author names with your name and email below:
+\author{Bhakti Prabhu}
+\affiliation{University of Stavanger, Norway}
+\email{br.prabhu@stud.uis.no}
+\author{Stephan Frederik Werner Brandasu}
+\affiliation{University of Stavanger, Norway}
+\email{sf.brandasu@stud.uis.no}
+
+%TODO: add the name of one or more supervisors
+%\supervisors{Rui Paulo Maximo Pereira Mateu Esteves and Jayachander Surbiryala}
+
+
+\begin{abstract}
+%The abstract lies in a different file: 
+\input{tex/00abstract}
+\end{abstract}
+
+%TODO: Replace with some keywords, relevant for your project
+\keywords{flight delay, spark, pyspark, hadoop, spark optimisations}
+
+\maketitle
+
+%Each section can be placed in a separate file and included by the input command.
+
+\section{Introduction}
+\label{sec:introduction}
+\input{tex/01introduction}
+
+\section{Methods}
+\label{sec:methods}
+\input{tex/02methods}
+
+\section{Results}
+\label{sec:results}
+\input{tex/03results}
+
+\section{Discussion}
+\label{sec:discussion}
+\input{tex/04discussion}
+
+\appendix
+\section{Appendix}
+\input{tex/90appendix}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bibliography}
+
+\end{document}
